@@ -1,0 +1,9 @@
+{
+  "name": "one-tap-ai-ultra-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@fal-ai/client": "^1.5.6"
+  }
+}

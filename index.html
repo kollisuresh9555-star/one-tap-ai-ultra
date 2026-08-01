@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<meta
+name="theme-color"
+content="#0b1020">
+
+<meta
+name="description"
+content="One Tap AI Ultra 2050">
+
+<title>One Tap AI Ultra 2050</title>
+
+<!-- PWA -->
+
+<link
+rel="manifest"
+href="manifest.json">
+
+<link
+rel="icon"
+type="image/png"
+sizes="192x192"
+href="assets/icon-192.png">
+
+<link
+rel="apple-touch-icon"
+href="assets/icon-192.png">
+
+<!-- Google Font -->
+
+<link
+rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link
+rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet">
+
+<!-- Font Awesome -->
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<!-- CSS -->
+
+<link
+rel="stylesheet"
+href="style.css">
+
+</head>
+
+<body>
+
+<!-- ===========================
+     SPLASH SCREEN
+=========================== -->
+
+<div id="splashScreen">
+
+<div class="splashBox">
+
+<img
+src="assets/splash.png"
+alt="Splash Logo"
+class="splashLogo">
+
+<h1>
+
+ONE TAP AI
+
+</h1>
+
+<h2>
+
+ULTRA 2050
+
+</h2>
+
+<p>
+
+Initializing AI Engine...
+
+</p>
+
+<div class="loaderRing"></div>
+
+</div>
+
+</div>
+
+<!-- ===========================
+     APP
+=========================== -->
+
+<div id="app">
+
+<!-- ===========================
+     HEADER
+=========================== -->
+
+<header class="header">
+
+<div class="headerLeft">
+
+<img
+src="assets/logo.png"
+alt="Logo"
+class="logo">
+
+<div>
+
+<h2>
+
+ONE TAP AI
+
+</h2>
+
+<span>
+
+Ultra 2050
+
+</span>
+
+</div>
+
+</div>
+
+<div class="headerRight">
+
+<button
+id="themeBtn"
+class="iconBtn">
+
+<i class="fa-solid fa-moon"></i>
+
+</button>
+
+<button
+id="settingsBtn"
+class="iconBtn">
+
+<i class="fa-solid fa-gear"></i>
+
+</button>
+
+</div>
+
+</header>
+
+<!-- ===========================
+     MAIN
+=========================== -->
+
+<main class="container"><!-- ===========================
+     HERO CARD
+=========================== -->
+
+<section class="heroCard">
+
+<img
+src="assets/logo.png"
+alt="One Tap AI"
+class="heroLogo">
+
+<h1>
+
+ONE TAP AI ULTRA 2050
+
+</h1>
+
+<p>
+
+One Tap • Limitless AI • Endless Possibilities
+
+</p>
+
+<div class="readyBox">
+
+<span class="dot"></span>
+
+READY TO GENERATE
+
+</div>
+
+</section>
+
+<!-- ===========================
+     AI PROMPT
+=========================== -->
+
+<section class="card promptCard">
+<!-- ===========================
+     IMAGE UPLOAD
+=========================== -->
+
+<section class="card">
+
+<h2 class="sectionTitle">
+
+<i class="fa-solid fa-image"></i>
+
+Image Upload
+
+</h2>
+
+<input
+type="file"
+id="imageInput"
+accept="image/*"
+hidden>
+
+<button
+id="uploadBtn"
+class="generateBtn">
+
+<i class="fa-solid fa-upload"></i>
+
+Choose Image
+
+</button>
+
+<div id="imagePreview">
+
+<div class="emptyOutput">
+
+<i class="fa-solid fa-image"></i>
+
+<p>No Image Selected</p>
+
+</div>
+
+</div>
+
+</section>
+<h2 class="sectionTitle">
+
+<i class="fa-solid fa-wand-magic-sparkles"></i>
+
+AI Prompt
+
+</h2>
+
+<textarea
+id="prompt"
+maxlength="5000"
+placeholder="Describe anything...
+
+Example:
+Create a futuristic cyberpunk city at night with neon lights, flying cars and cinematic quality."></textarea>
+
+<div class="promptFooter">
+
+<span id="counter">
+
+0 / 5000
+
+</span>
+
+<button
+id="clearPrompt"
+class="smallBtn">
+
+<i class="fa-solid fa-trash"></i>
+
+Clear
+
+</button>
+<button id="voiceBtn" class="smallBtn">
+
+<i class="fa-solid fa-microphone"></i>
+
+Voice
+
+</button>
+</div>
+
+</section>
+
+<!-- ===========================
+     GENERATE
+=========================== -->
+
+<section class="card">
+
+<button
+id="generateBtn"
+class="generateBtn">
+
+<i class="fa-solid fa-bolt"></i>
+
+GENERATE
+<button id="installBtn" class="installBtn">
+
+<i class="fa-solid fa-download"></i>
+
+Install App
+
+</button>
+</button>
+
+<div class="progress">
+
+<div id="progressBar"></div>
+
+</div>
+
+</section>
+
+<!-- ===========================
+     DURATION
+=========================== -->
+
+<section class="card">
+
+<h2 class="sectionTitle">
+
+<i class="fa-solid fa-clock"></i>
+
+Duration
+
+</h2>
+
+<select id="duration">
+
+<option value="10">10 Seconds</option>
+
+<option value="15">15 Seconds</option>
+
+<option value="30">30 Seconds</option>
+
+<option value="60">1 Minute</option>
+
+<option value="120">2 Minutes</option>
+
+<option value="180">3 Minutes</option>
+
+<option value="240">4 Minutes</option>
+
+<option value="300">5 Minutes</option>
+
+<option value="360">6 Minutes</option>
+
+<option value="420">7 Minutes</option>
+
+<option value="480">8 Minutes</option>
+
+<option value="540">9 Minutes</option>
+
+</select>
+
+</section><!-- ===========================
+     AI STYLE
+=========================== -->
+
+<section class="card">
+
+<h2 class="sectionTitle">
+
+<i class="fa-solid fa-palette"></i>
+
+AI Style
+
+</h2>
+
+<div class="styleGrid">
+
+<button
+class="styleBtn active"
+data-style="3d">
+
+3D Animation
+
+</button>
+
+<button
+class="styleBtn"
+data-style="pixel">
+
+3D Pixel
+
+</button>
+
+<button
+class="styleBtn"
+data-style="anime">
+
+Anime
+
+</button>
+
+<button
+class="styleBtn"
+data-style="cartoon">
+
+Cartoon
+
+</button>
+
+<button
+class="styleBtn"
+data-style="motu">
+
+Motu Patlu Style
+
+</button>
+
+</div>
+
+</section>
+
+<!-- ===========================
+     AI MODE
+=========================== -->
+
+<section class="card">
+
+<h2 class="sectionTitle">
+
+<i class="fa-solid fa-layer-group"></i>
+
+Choose AI Mode
+
+</h2>
+
+<div class="modeGrid">
+
+<button
+class="modeBtn active"
+data-mode="chat">
+
+<i class="fa-solid fa-comments"></i>
+
+<span>Chat</span>
+
+</button>
+
+<button
+class="modeBtn"
+data-mode="image">
+
+<i class="fa-solid fa-image"></i>
+
+<span>Image</span>
+
+</button>
+
+<button
+class="modeBtn"
+data-mode="video">
+
+<i class="fa-solid fa-video"></i>
+
+<span>Video</span>
+
+</button>
+
+<button
+class="modeBtn"
+data-mode="music">
+
+<i class="fa-solid fa-music"></i>
+
+<span>Music</span>
+
+</button>
+
+<button
+class="modeBtn"
+data-mode="voice">
+
+<i class="fa-solid fa-microphone"></i>
+
+<span>Voice</span>
+
+</button>
+
+</div>
+
+</section>
+
+<!-- ===========================
+     OUTPUT
+=========================== -->
+
+<section class="card">
+
+<h2 class="sectionTitle">
+
+<i class="fa-solid fa-display"></i>
+
+Output
+
+</h2>
+<div id="thinkingBox" class="thinkingBox">
+
+<div class="aiBrain">
+
+<i class="fa-solid fa-brain"></i>
+
+</div>
+
+<h3>AI is Thinking...</h3>
+
+<p>Please wait while your content is being generated.</p>
+
+<div class="thinkingDots">
+
+<span></span>
+
+<span></span>
+
+<span></span>
+
+</div>
+
+</div>
+<div id="previewArea">
+
+<div class="emptyOutput">
+
+<i class="fa-solid fa-wand-magic-sparkles"></i>
+
+<h3>
+
+Ready to Generate
+
+</h3>
+
+<p>
+
+Your AI result will appear here.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="outputButtons">
+
+<button id="downloadBtn">
+
+<i class="fa-solid fa-download"></i>
+
+Download
+
+</button>
+
+<button id="shareBtn">
+
+<i class="fa-solid fa-share-nodes"></i>
+
+Share
+
+</button>
+
+<button id="copyBtn">
+
+<i class="fa-solid fa-copy"></i>
+
+Copy
+
+</button>
+
+</div>
+
+</section>
+
+<!-- ===========================
+     HISTORY
+=========================== -->
+
+<section class="card">
+
+<h2 class="sectionTitle">
+
+<i class="fa-solid fa-clock-rotate-left"></i>
+
+History
+
+</h2>
+
+<input
+type="search"
+id="searchHistory"
+placeholder="Search history...">
+
+<div id="historyList">
+
+<div class="emptyHistory">
+
+No History Available
+
+</div>
+
+</div>
+
+</section><!-- ===========================
+     SETTINGS PANEL
+=========================== -->
+
+</main>
+
+<div id="overlay"></div>
+
+<aside id="settingsPanel">
+
+<div class="settingsHeader">
+
+<h2>
+
+<i class="fa-solid fa-gear"></i>
+
+Settings
+
+</h2>
+
+<button id="closeSettings">
+
+<i class="fa-solid fa-xmark"></i>
+
+</button>
+
+</div>
+
+<!-- ===========================
+     API KEYS
+=========================== -->
+
+<div class="settingsCard">
+
+<h3>
+
+<i class="fa-solid fa-key"></i>
+
+API Keys
+
+</h3>
+
+<label>
+
+💬 OpenRouter (Chat)
+
+</label>
+
+<input
+type="password"
+id="chatApi"
+placeholder="sk-or-xxxxxxxxxxxxxxxx">
+
+<label>
+
+🖼️ Fal AI (Image)
+
+</label>
+
+<input
+type="password"
+id="imageApi"
+placeholder="fal_xxxxxxxxxxxxx">
+
+<label>
+
+🎬 Fal AI / Runway (Video)
+
+</label>
+
+<input
+type="password"
+id="videoApi"
+placeholder="fal_xxxxxxxxxxxxx">
+
+<label>
+
+🎵 Suno (Music)
+
+</label>
+
+<input
+type="password"
+id="musicApi"
+placeholder="Suno API Key">
+
+<label>
+
+🎙️ ElevenLabs (Voice)
+
+</label>
+
+<input
+type="password"
+id="voiceApi"
+placeholder="sk_xxxxxxxxxxxxx">
+
+<button
+id="saveApiBtn"
+class="saveBtn">
+
+<i class="fa-solid fa-floppy-disk"></i>
+
+Save API Keys
+
+</button>
+
+</div>
+
+<!-- ===========================
+     APP SETTINGS
+=========================== -->
+
+<div class="settingsCard">
+
+<h3>
+
+<i class="fa-solid fa-sliders"></i>
+
+Application
+
+</h3>
+
+<div class="settingItem">
+
+<span>
+
+Dark / Light Theme
+
+</span>
+
+<label class="switch">
+
+<input
+type="checkbox"
+id="themeSwitch">
+
+<span class="slider"></span>
+
+</label>
+
+</div>
+
+<div class="settingItem">
+
+<span>
+
+Version
+
+</span>
+
+<strong>
+
+Ultra 2050
+
+</strong>
+
+</div>
+
+<div class="settingItem">
+
+<span>
+
+PWA
+
+</span>
+
+<strong>
+
+Ready
+
+</strong>
+
+</div>
+
+<div class="settingItem">
+
+<span>
+
+Offline Mode
+
+</span>
+
+<strong>
+
+Enabled
+
+</strong>
+
+</div>
+
+</div>
+
+<!-- ===========================
+     ABOUT
+=========================== -->
+
+<div class="settingsCard">
+
+<h3>
+
+<i class="fa-solid fa-circle-info"></i>
+
+About
+
+</h3>
+
+<p>
+
+<b>ONE TAP AI ULTRA 2050</b>
+
+</p>
+
+<p>
+
+One App.
+
+Five AI Engines.
+
+Unlimited Possibilities.
+
+</p>
+
+<p>
+
+💬 Chat
+
+🖼️ Image
+
+🎬 Video
+
+🎵 Music
+
+🎙️ Voice
+
+</p>
+
+</div>
+
+</aside>
+
+<!-- ===========================
+     JAVASCRIPT
+=========================== -->
+
+<script src="script.js"></script>
+<!-- ===========================
+     TOAST
+=========================== -->
+
+<div id="toast" class="toast"></div>
+</body>
+
+</html>
