@@ -999,14 +999,74 @@ return answer;
    IMAGE
 ========================= */
 
-async function generateImage(){
+async function generateImage(text) {
 
-throw new Error(
+    const response = await fetch("/api/image", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            prompt: text,
+            image_size: "square_hd"
+        })
+    });
 
-"Fal AI integration will be added in next part."
+    const data = await response.json();
 
-);
+    if (!response.ok || !data.success) {
+        throw new Error(
+            data.error || "Image generation failed."
+        );
+    }
 
+    if (!data.image) {
+        throw new Error(
+            "No image URL received from Fal AI."
+        );
+    }
+
+    const imageUrl = data.image;
+
+    const previewArea =
+        document.getElementById("previewArea");
+
+    if (previewArea) {
+        previewArea.innerHTML = `
+            <img
+                src="${imageUrl}"
+                alt="AI Generated Image"
+                style="
+                    width:100%;
+                    max-width:100%;
+                    border-radius:20px;
+                    display:block;
+                "
+            />
+        `;
+    }
+
+    const downloadBtn =
+        document.getElementById("downloadBtn");
+
+    if (downloadBtn) {
+
+        downloadBtn.style.display = "block";
+
+        downloadBtn.onclick = () => {
+
+            const link =
+                document.createElement("a");
+
+            link.href = imageUrl;
+            link.target = "_blank";
+            link.rel = "noopener";
+
+            link.click();
+        };
+    }
+
+    return imageUrl;
 }
 
 /* =========================
