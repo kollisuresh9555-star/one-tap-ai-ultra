@@ -898,101 +898,71 @@ GENERATE
 /* =========================
    OPENROUTER CHAT
 ========================= */
-
 async function generateChat(promptText){
 
-const key=apiKey("chat");
+    const key = apiKey("chat");
 
-if(!key){
+    if(!key){
+        throw new Error("OpenRouter API Key Missing");
+    }
 
-throw new Error(
-"OpenRouter API Key Missing"
-);
+    const res = await fetch(
+        API.chat.url,
+        {
+            method: "POST",
 
-}
+            headers: {
+                Authorization: `Bearer ${key}`,
+                "Content-Type": "application/json",
+                "HTTP-Referer": location.origin,
+                "X-Title": APP.name
+            },
 
-const res=await fetch(
+            body: JSON.stringify({
+                model: API.chat.model,
 
-API.chat.url,
-
-{
-
-method:"POST",
-
-headers:{
-
-Authorization:`Bearer ${key}`,
-
-"Content-Type":
-"application/json",
-
-"HTTP-Referer":
-location.origin,
-
-"X-Title":
-APP.name
-
-},
-
-body:JSON.stringify({
-
-model:API.chat.model,
-
-messages:[
-
-{
-
-role:"user",
-
-content:promptText
-
-}
-
-]
-
-})
-
-}
-
-);
-
-if(!res.ok){
-
-if (!res.ok) {
-    const errorText = await res.text();
-    console.log("Status:", res.status);
-    console.log("Response:", errorText);
-
-    throw new Error(
-        `OpenRouter Error ${res.status}\n${errorText}`
+                messages: [
+                    {
+                        role: "user",
+                        content: promptText
+                    }
+                ]
+            })
+        }
     );
-}
 
-}
+    if(!res.ok){
 
-const data=
-await res.json();
+        const errorText = await res.text();
 
-const answer=
-data.choices[0]
-.message.content;
+        console.log("Status:", res.status);
+        console.log("Response:", errorText);
 
-showOutput(`
+        throw new Error(
+            `OpenRouter Error ${res.status}\n${errorText}`
+        );
+    }
 
-<div class="chatResult">
+    const data = await res.json();
 
-<pre>
+    if(
+        !data.choices ||
+        !data.choices[0] ||
+        !data.choices[0].message
+    ){
+        throw new Error("Invalid OpenRouter response");
+    }
 
-${escapeHTML(answer)}
+    const answer =
+        data.choices[0].message.content;
 
-</pre>
+    showOutput(`
+        <div class="chatResult">
+            <pre>${escapeHTML(answer)}</pre>
+        </div>
+    `);
 
-</div>
-
-`);
-
-return answer;
-
+    return answer;
 }
 
 /* =========================
