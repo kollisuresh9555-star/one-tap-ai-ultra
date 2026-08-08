@@ -897,62 +897,36 @@ GENERATE
 
 /* =========================
    OPENROUTER CHAT
-========================= */
-async function generateChat(promptText){
+========================= * 
+async function generateChat(promptText) {
 
-    const key = apiKey("chat");
-
-    if(!key){
-        throw new Error("OpenRouter API Key Missing");
+    if (!promptText || !promptText.trim()) {
+        throw new Error("Please enter a prompt");
     }
 
-    const res = await fetch(
-        API.chat.url,
-        {
-            method: "POST",
-
-            headers: {
-                Authorization: `Bearer ${key}`,
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                model: API.chat.model,
-
-                messages: [
-                    {
-                        role: "user",
-                        content: promptText
-                    }
-                ]
-            })
-        }
-    );
-
-    if(!res.ok){
-
-        const errorText = await res.text();
-
-        console.log("Status:", res.status);
-        console.log("Response:", errorText);
-
-        throw new Error(
-            `OpenRouter Error ${res.status}\n${errorText}`
-        );
-    }
+    const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            prompt: promptText.trim()
+        })
+    });
 
     const data = await res.json();
 
-    if(
-        !data.choices ||
-        !data.choices[0] ||
-        !data.choices[0].message
-    ){
-        throw new Error("Invalid OpenRouter response");
+    if (!res.ok) {
+        throw new Error(
+            data.error || `Server Error ${res.status}`
+        );
     }
 
-    const answer =
-        data.choices[0].message.content;
+    if (!data.answer) {
+        throw new Error("Invalid AI response");
+    }
+
+    const answer = data.answer;
 
     showOutput(`
         <div class="chatResult">
@@ -962,8 +936,7 @@ async function generateChat(promptText){
 
     return answer;
 }
-
-/* =========================
+/==================
    IMAGE
 ========================= */
 
