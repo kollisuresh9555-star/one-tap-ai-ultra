@@ -913,9 +913,7 @@ async function generateChat(promptText){
 
             headers: {
                 Authorization: `Bearer ${key}`,
-                "Content-Type": "application/json",
-                "HTTP-Referer": location.origin,
-                "X-Title": APP.name
+                "Content-Type": "application/json"
             },
 
             body: JSON.stringify({
