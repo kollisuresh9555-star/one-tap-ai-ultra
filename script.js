@@ -904,7 +904,7 @@ async function generateChat(promptText) {
         throw new Error("Please enter a prompt");
     }
 
-    const res = await fetch("/api/chat", {
+    const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -914,16 +914,16 @@ async function generateChat(promptText) {
         })
     });
 
-    const data = await res.json();
+    const data = await response.json();
 
-    if (!res.ok) {
+    if (!response.ok) {
         throw new Error(
-            data.error || `Server Error ${res.status}`
+            data.error || "Chat API request failed"
         );
     }
 
     if (!data.answer) {
-        throw new Error("Invalid AI response");
+        throw new Error("No answer received");
     }
 
     const answer = data.answer;
