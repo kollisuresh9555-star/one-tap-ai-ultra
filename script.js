@@ -1013,15 +1013,42 @@ async function generateImage(text) {
 /* =========================
    VIDEO
 ========================= */
+async function generateVideo(promptText) {
 
-async function generateVideo(){
+    if (!promptText || !promptText.trim()) {
+        throw new Error("Please enter a video prompt");
+    }
 
-throw new Error(
+    const response = await fetch("/api/video", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            prompt: promptText.trim()
+        })
+    });
 
-"Fal AI / Runway integration will be added in next part."
+    const data = await response.json();
 
-);
+    if (!response.ok) {
+        throw new Error(
+            data.error || "Video generation failed"
+        );
+    }
 
+    if (!data.request_id) {
+        throw new Error("Video request was not created");
+    }
+
+    showOutput(`
+        <div class="videoResult">
+            <p>🎬 Video generation started...</p>
+            <p>Please wait...</p>
+        </div>
+    `);
+
+    return data;
 }
 
 /* =========================
