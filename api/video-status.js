@@ -1,6 +1,8 @@
-const MODEL = "fal-ai/wan-2.5-preview";
+const MODEL = "fal-ai/wan-25-preview/text-to-video";
 
 export default async function handler(req, res) {
+    res.setHeader("Content-Type", "application/json");
+
     if (req.method !== "GET") {
         return res.status(405).json({
             error: "Method not allowed"
@@ -29,7 +31,6 @@ export default async function handler(req, res) {
             `${encodeURIComponent(requestId)}/status`;
 
         const statusResponse = await fetch(statusUrl, {
-            method: "GET",
             headers: {
                 Authorization: `Key ${key}`
             }
@@ -42,8 +43,8 @@ export default async function handler(req, res) {
         try {
             statusData = JSON.parse(statusText);
         } catch {
-            return res.status(statusResponse.status || 500).json({
-                error: "FAL returned invalid JSON",
+            return res.status(502).json({
+                error: "FAL status returned non-JSON",
                 response: statusText
             });
         }
@@ -56,8 +57,9 @@ export default async function handler(req, res) {
 
         if (statusData.status !== "COMPLETED") {
             return res.status(200).json({
-                status: statusData.status,
-                request_id: requestId
+                success: true,
+                request_id: requestId,
+                status: statusData.status
             });
         }
 
@@ -66,7 +68,6 @@ export default async function handler(req, res) {
             `${encodeURIComponent(requestId)}`;
 
         const resultResponse = await fetch(resultUrl, {
-            method: "GET",
             headers: {
                 Authorization: `Key ${key}`
             }
@@ -79,8 +80,8 @@ export default async function handler(req, res) {
         try {
             resultData = JSON.parse(resultText);
         } catch {
-            return res.status(resultResponse.status || 500).json({
-                error: "FAL returned invalid result JSON",
+            return res.status(502).json({
+                error: "FAL result returned non-JSON",
                 response: resultText
             });
         }
@@ -92,8 +93,9 @@ export default async function handler(req, res) {
         }
 
         return res.status(200).json({
-            status: "COMPLETED",
+            success: true,
             request_id: requestId,
+            status: "COMPLETED",
             result: resultData
         });
 
