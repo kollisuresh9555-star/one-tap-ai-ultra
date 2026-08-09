@@ -1,6 +1,7 @@
-const MODEL = "fal-ai/wan-25-preview";
+const MODEL = "fal-ai/wan-25-preview/text-to-video";
 
 export default async function handler(req, res) {
+    res.setHeader("Content-Type", "application/json");
 
     if (req.method !== "POST") {
         return res.status(405).json({
@@ -9,12 +10,12 @@ export default async function handler(req, res) {
     }
 
     try {
+        const { prompt, duration = "5", aspect_ratio = "16:9" } =
+            req.body || {};
 
-        const { request_id } = req.body || {};
-
-        if (!request_id) {
+        if (!prompt || !prompt.trim()) {
             return res.status(400).json({
-                error: "request_id is required"
+                error: "Video prompt is required"
             });
         }
 
@@ -26,59 +27,67 @@ export default async function handler(req, res) {
             });
         }
 
-        const statusResponse = await fetch(
-            `https://queue.fal.run/${MODEL}/requests/${encodeURIComponent(request_id)}/status`,
+        const response = await fetch(
+            `https://queue.fal.run/${MODEL}`,
             {
-                method: "GET",
+                method: "POST",
+
                 headers: {
-                    "Authorization": `Key ${key}`
-                }
+                    Authorization: `Key ${key}`,
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    prompt: prompt.trim(),
+                    aspect_ratio,
+                    resolution: "480p",
+                    duration
+                })
             }
         );
 
-        const statusData = await statusResponse.json();
+        const text = await response.text();
 
-        if (!statusResponse.ok) {
-            return res.status(statusResponse.status).json({
-                error: statusData
+        let data;
+
+        try {
+            data = JSON.parse(text);
+        } catch {
+            return res.status(502).json({
+                error: "FAL returned non-JSON response",
+                response: text
             });
         }
 
-        if (statusData.status !== "COMPLETED") {
-            return res.status(200).json({
-                status: statusData.status
+        if (!response.ok) {
+            return res.status(response.status).json({
+                error: data
             });
         }
 
-        const resultResponse = await fetch(
-            `https://queue.fal.run/${MODEL}/requests/${encodeURIComponent(request_id)}`,
-            {
-                method: "GET",
-                headers: {
-                    "Authorization": `Key ${key}`
-                }
-            }
-        );
+        const requestId =
+            data.request_id ||
+            data.requestId ||
+            data.id;
 
-        const resultData = await resultResponse.json();
-
-        if (!resultResponse.ok) {
-            return res.status(resultResponse.status).json({
-                error: resultData
+        if (!requestId) {
+            return res.status(502).json({
+                error: "FAL did not return request_id",
+                response: data
             });
         }
 
         return res.status(200).json({
-            status: "COMPLETED",
-            result: resultData
+            success: true,
+            request_id: requestId,
+            status: "IN_QUEUE"
         });
 
     } catch (error) {
-
-        console.error("Video Status Error:", error);
+        console.error("Video API Error:", error);
 
         return res.status(500).json({
-            error: error.message || "Video status check failed"
+            error: error.message || "Video generation failed"
         });
     }
 }
