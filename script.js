@@ -1014,41 +1014,119 @@ async function generateImage(text) {
    VIDEO
 ========================= */
 async function generateVideo(promptText) {
+  if (!promptText || !promptText.trim()) {
+    throw new Error("Please enter a video prompt");
+  }
 
-    if (!promptText || !promptText.trim()) {
-        throw new Error("Please enter a video prompt");
-    }
+  const response = await fetch("/api/video", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      prompt: promptText.trim()
+    })
+  });
 
-    const response = await fetch("/api/video", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            prompt: promptText.trim()
-        })
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data?.error?.message ||
+      data?.error ||
+      "Video generation failed"
+    );
+  }
+
+  if (!data.request_id) {
+    throw new Error("Video request ID was not received");
+  }
+
+  showOutput(`
+    <div class="videoResult">
+      <p>🎬 Video generation started...</p>
+      <p>Please wait...</p>
+    </div>
+  `);
+
+  const requestId = data.request_id;
+
+  for (let attempt = 0; attempt < 60; attempt++) {
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    const statusResponse = await fetch("/api/video-status", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        request_id: requestId
+      })
     });
 
-    const data = await response.json();
+    const statusData = await statusResponse.json();
 
-    if (!response.ok) {
-        throw new Error(
-            data.error || "Video generation failed"
-        );
+    if (!statusResponse.ok) {
+      throw new Error(
+        statusData?.error?.message ||
+        statusData?.error ||
+        "Video status check failed"
+      );
     }
 
-    if (!data.request_id) {
-        throw new Error("Video request was not created");
+    const status = statusData?.status?.status;
+
+    if (status === "COMPLETED") {
+      const result = statusData.result;
+
+      const videoUrl =
+        result?.video?.url ||
+        result?.video_url ||
+        result?.url;
+
+      if (!videoUrl) {
+        throw new Error("Video completed but URL was not found");
+      }
+
+      showOutput(`
+        <div class="videoResult">
+          <p>✅ Video generated successfully!</p>
+
+          <video
+            src="${videoUrl}"
+            controls
+            playsinline
+            style="width:100%;max-width:720px;border-radius:12px;"
+          ></video>
+
+          <br>
+
+          <a
+            href="${videoUrl}"
+            target="_blank"
+            rel="noopener"
+          >
+            ⬇️ Open / Download Video
+          </a>
+        </div>
+      `);
+
+      return result;
+    }
+
+    if (status === "FAILED") {
+      throw new Error("Video generation failed");
     }
 
     showOutput(`
-        <div class="videoResult">
-            <p>🎬 Video generation started...</p>
-            <p>Please wait...</p>
-        </div>
+      <div class="videoResult">
+        <p>🎬 Generating video...</p>
+        <p>Status: ${status || "IN_PROGRESS"}</p>
+      </div>
     `);
+  }
 
-    return data;
+  throw new Error("Video generation timed out. Please try again.");
 }
 
 /* =========================
